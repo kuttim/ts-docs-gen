@@ -45,4 +45,4 @@ In this example, `ts-docs-gen` will read TypeScript files from the `./src` direc
 
 ### License
 
-This project is licensed under the MIT license. See the [License](https://github.com/kuttim/ts-docs-gen/LICENSE) file for more details.
+This project is licensed under the MIT license. See the [License](https://github.com/kuttim/ts-docs-gen/blob/master/LICENSE) file for more details.
