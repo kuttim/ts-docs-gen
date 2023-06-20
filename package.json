@@ -13,7 +13,7 @@
     "url": "git+https://github.com/kuttim/ts-docs-gen.git"
   },
   "keywords": [
-    "documentation",
+    "documentation", 
     "TypeScript",
     "generator"
   ],
