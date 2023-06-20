@@ -1,5 +1,5 @@
 {
-  "name": "ts-docs-gen",
+  "name": "@kuttim/ts-docs-gen",
   "version": "1.0.0",
   "description": "A documentation generation tool for TypeScript projects",
   "main": "src/index.ts",
