@@ -13,7 +13,7 @@
     "url": "git+https://github.com/kuttim/ts-docs-gen.git"
   },
   "keywords": [
-    "documentation", 
+    "documentation",
     "TypeScript",
     "generator"
   ],
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/kuttim/ts-docs-gen#readme",
   "devDependencies": {
+    "@types/node": "^20.3.1",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.2"
   },
