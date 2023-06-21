@@ -97,19 +97,23 @@ function generateClassDocs(classDeclaration: ClassDeclaration): string {
     return docs;
 }
 
-export function generateDocsForProject(project: Project): string {
-    let documentation = '';
-
-    const sourceFiles = project.getSourceFiles();
-
-    sourceFiles.forEach((sourceFile) => {
-        documentation += `# Source File: ${sourceFile.getBaseName()}\n\n`;
-        documentation += generateDocs(sourceFile); 
-        documentation += '\n---\n\n';
+export function generateDocsForProject(projectPath: string): string {
+    const project = new Project({
+      tsConfigFilePath: projectPath,
     });
-
+  
+    let documentation = '';
+  
+    const sourceFiles = project.getSourceFiles();
+  
+    sourceFiles.forEach((sourceFile) => {
+      documentation += `# Source File: ${sourceFile.getBaseName()}\n\n`;
+      documentation += generateDocs(sourceFile);
+      documentation += '\n---\n\n';
+    });
+  
     return documentation;
-}
+  }
 
 
 export function generateDocs(sourceFile: SourceFile): string {
