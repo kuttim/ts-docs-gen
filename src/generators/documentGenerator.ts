@@ -1,4 +1,5 @@
 import { Project, SourceFile, Node, ParameterDeclaration, MethodDeclaration, ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, EnumDeclaration, TypeAliasDeclaration, VariableDeclaration, SyntaxKind, PropertySignature } from "ts-morph";
+import path from 'path';
 
 function generateFunctionDocs(functionDeclaration: FunctionDeclaration | MethodDeclaration): string {
     let docs = '';
@@ -105,7 +106,10 @@ export function generateDocsForProject(projectPath: string): string {
     let documentation = '';
   
     const sourceFiles = project.getSourceFiles().filter((sourceFile) => {
-      return !sourceFile.getFilePath().includes('node_modules');
+      // Exclude source files within node_modules
+      const filePath = sourceFile.getFilePath();
+      const relativePath = path.relative(projectPath, filePath);
+      return !relativePath.startsWith('node_modules');
     });
   
     sourceFiles.forEach((sourceFile) => {
