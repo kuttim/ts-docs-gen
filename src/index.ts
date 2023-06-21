@@ -2,7 +2,6 @@ import { Command } from 'commander';
 import { Project } from 'ts-morph';
 import { generateDocsForProject } from './generators/documentGenerator';
 
-// Create a new command
 const program = new Command();
 
 program
