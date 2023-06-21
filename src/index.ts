@@ -4,24 +4,44 @@ import { generateDocsForProject } from './generators/documentGenerator';
 import * as path from 'path';
 import * as fs from 'fs';
 
+interface ConfigOptions {
+  input: string;
+  output: string;
+  exclude?: string[];
+}
+
 const program = new Command();
 
 program
   .action(() => {
-    const currentDirectory = process.cwd();
-    const tsconfigPath = path.join(currentDirectory, 'tsconfig.json');
+    const configFilePath = path.join(process.cwd(), 'ts-docs-gen.json');
+    let config: ConfigOptions;
+    if (fs.existsSync(configFilePath)) {
+      config = JSON.parse(fs.readFileSync(configFilePath, 'utf-8'));
+    } else {
+      config = {
+        input: './src',
+        output: './docs',
+        exclude: ['**/*.spec.ts']
+      };
+    }
 
-    if (!fs.existsSync(tsconfigPath)) {
-      console.log('Error: tsconfig.json not found in the current directory.');
+    if (!fs.existsSync(config.input)) {
+      console.log('Error: Input directory not found.');
       return;
     }
 
+    if (!fs.existsSync(config.output)) {
+      fs.mkdirSync(config.output, { recursive: true });
+    }
+
     const project = new Project({
-      tsConfigFilePath: tsconfigPath,
+      tsConfigFilePath: path.join(config.input, 'tsconfig.json'),
     });
 
-    const documentation = generateDocsForProject(tsconfigPath);
-    console.log(documentation);
+    const documentation = generateDocsForProject(project, config.exclude);
+    
+    fs.writeFileSync(path.join(config.output, 'documentation.md'), documentation);
   });
 
 program.parse(process.argv);
