@@ -1,7 +1,8 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { Project } from "ts-morph";
-import { generateDocs } from './documentGenerator';
+import { generateDocs } from './generators/documentGenerator';
+
 class TsDocsGen {
     static generate(tsFilePath: string): void {
         const project = new Project();

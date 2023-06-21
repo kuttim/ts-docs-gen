@@ -3,30 +3,19 @@ import { Node, SourceFile, ParameterDeclaration, MethodDeclaration, ClassDeclara
 function generateFunctionDocs(functionDeclaration: FunctionDeclaration | MethodDeclaration): string {
     let docs = '';
 
-    const name = functionDeclaration.getName();
-    const returnType = functionDeclaration.getReturnType().getText();
-    const parameters = functionDeclaration.getParameters();
+    docs += `### Function: **${functionDeclaration.getName()}**\n\n`;
+    docs += `* **Return Type:** \`${functionDeclaration.getReturnType().getText()}\`\n`;
+    docs += '* **Parameters:**\n';
 
-    docs += `Function Name: ${name}\n`;
-    docs += `Return Type: ${returnType}\n`;
-    docs += 'Parameters:\n';
-
-    parameters.forEach((parameter: ParameterDeclaration) => {
-        const parameterName = parameter.getName();
-        const parameterType = parameter.getType().getText();
-        
-        docs += `\tName: ${parameterName}, Type: ${parameterType}\n`;
+    functionDeclaration.getParameters().forEach((parameter: ParameterDeclaration) => {
+        docs += `  * **${parameter.getName()}**: \`${parameter.getType().getText()}\`\n`;
     });
 
-    const jsDocs = functionDeclaration.getJsDocs();
+    functionDeclaration.getJsDocs().forEach(jsDoc => {
+        docs += `* **JSDoc:**\n\n\`\`\`${jsDoc.getDescription()}\`\`\`\n`;
+    });
 
-    if (jsDocs.length > 0) {
-        docs += 'JSDoc:\n';
-        jsDocs.forEach(jsDoc => {
-            docs += `\t${jsDoc.getDescription()}\n`;
-        });
-    }
-
+    docs += '\n---\n\n';
     return docs;
 }
 
@@ -110,7 +99,8 @@ function generateClassDocs(classDeclaration: ClassDeclaration): string {
 
 
 export function generateDocs(sourceFile: SourceFile): string {
-    let documentation = '';
+    let documentation = '# Documentation\n\n';
+    let variablesDocumentation = '## Variables\n\n';
 
     sourceFile.forEachDescendant((node: Node) => {
         if (node.getKind() === SyntaxKind.FunctionDeclaration) {
@@ -135,7 +125,7 @@ export function generateDocs(sourceFile: SourceFile): string {
         }
         else if (node.getKind() === SyntaxKind.VariableDeclaration) {
             const variableDeclaration = node as VariableDeclaration;
-            documentation += generateVariableDocs(variableDeclaration);
+            variablesDocumentation += generateVariableDocs(variableDeclaration);
         }
     });
 
