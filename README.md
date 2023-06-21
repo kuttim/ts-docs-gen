@@ -1,6 +1,6 @@
 # ts-docs-gen
 
-`ts-docs-gen` is a documentation generation tool designed specifically for TypeScript projects. With an intuitive and user-friendly interface, it streamlines the process of creating detailed, structured, and searchable documentation from your TypeScript source code.
+`ts-docs-gen` is a command-line documentation generation tool specifically designed for TypeScript projects. It simplifies the process of creating detailed, structured, and searchable documentation from your TypeScript source code.
 
 ## Features
 
