@@ -1,9 +1,11 @@
 {
   "name": "@kuttim/ts-docs-gen",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "A documentation generation tool for TypeScript projects.",
   "main": "dist/index.js",
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "ts-node src/index.ts",
