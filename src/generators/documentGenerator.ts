@@ -1,4 +1,4 @@
-import { Node, SourceFile, ParameterDeclaration, MethodDeclaration, ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, EnumDeclaration, TypeAliasDeclaration, VariableDeclaration, SyntaxKind, PropertySignature } from "ts-morph";
+import { Project, SourceFile, Node, ParameterDeclaration, MethodDeclaration, ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, EnumDeclaration, TypeAliasDeclaration, VariableDeclaration, SyntaxKind, PropertySignature } from "ts-morph";
 
 function generateFunctionDocs(functionDeclaration: FunctionDeclaration | MethodDeclaration): string {
     let docs = '';
@@ -97,6 +97,20 @@ function generateClassDocs(classDeclaration: ClassDeclaration): string {
     return docs;
 }
 
+export function generateDocsForProject(project: Project): string {
+    let documentation = '';
+
+    const sourceFiles = project.getSourceFiles();
+
+    sourceFiles.forEach((sourceFile) => {
+        documentation += `# Source File: ${sourceFile.getBaseName()}\n\n`;
+        documentation += generateDocs(sourceFile); 
+        documentation += '\n---\n\n';
+    });
+
+    return documentation;
+}
+
 
 export function generateDocs(sourceFile: SourceFile): string {
     let documentation = '# Documentation\n\n';
@@ -128,6 +142,7 @@ export function generateDocs(sourceFile: SourceFile): string {
             variablesDocumentation += generateVariableDocs(variableDeclaration);
         }
     });
+    documentation += variablesDocumentation;
 
     return documentation;
 }

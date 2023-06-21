@@ -1,6 +1,6 @@
 {
   "name": "@kuttim/ts-docs-gen",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A documentation generation tool for TypeScript projects",
   "main": "src/index.ts",
   "scripts": {
@@ -29,6 +29,7 @@
     "typescript": "^4.5.2"
   },
   "dependencies": {
+    "commander": "^11.0.0",
     "fs": "^0.0.1-security",
     "path": "^0.12.7",
     "ts-morph": "^19.0.0"

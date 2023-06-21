@@ -1,19 +1,23 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import { Project } from "ts-morph";
-import { generateDocs } from './generators/documentGenerator';
+import { Command } from 'commander';
+import { Project } from 'ts-morph';
+import { generateDocsForProject } from './generators/documentGenerator';
 
-class TsDocsGen {
-    static generate(tsFilePath: string): void {
-        const project = new Project();
+// Create a new command
+const program = new Command();
 
-        const sourceFile = project.addSourceFileAtPath(tsFilePath);
-        const docs = generateDocs(sourceFile);
-        const outputFilePath = path.join(__dirname, '..', 'docs', path.basename(tsFilePath, '.ts') + '.md');
+program
+  .argument('<tsconfigPath>', 'Path to tsconfig.json')
+  .action((tsconfigPath) => {
+    const project = new Project({
+      compilerOptions: {
+        allowJs: true,
+      },
+      tsConfigFilePath: tsconfigPath,
+    });
 
-        fs.mkdirSync(path.dirname(outputFilePath), { recursive: true });
-        fs.writeFileSync(outputFilePath, docs);
+    const documentation = generateDocsForProject(project);
+    console.log(documentation);
+  });
 
-        console.log(`Documentation generated at ${outputFilePath}`);
-    }
-}
+program.parse(process.argv);
+
