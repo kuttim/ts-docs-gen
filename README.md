@@ -16,11 +16,11 @@
 You can install `ts-docs-gen` globally via npm:
 
 ```bash
-npm install -g ts-docs-gen
+npm install -g @kuttim/ts-docs-gen
 ```
 or locally in your project
 ```bash
-npm install --save-dev ts-docs-gen
+npm install --save-dev @kuttim/ts-docs-gen
 ```
 
 ### Usage
