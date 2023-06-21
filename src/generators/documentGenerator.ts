@@ -74,7 +74,7 @@ function generateVariableDocs(variableDeclaration: VariableDeclaration): string 
     const name = variableDeclaration.getName();
     const type = variableDeclaration.getType().getText();
 
-    docs += `Variable Name: ${name}, Type: ${type}\n`;
+    docs += `* **Variable Name:** \`${name}\`, **Type:** \`${type}\`\n`;
 
     return docs;
 }
