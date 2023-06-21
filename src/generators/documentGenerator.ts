@@ -104,7 +104,9 @@ export function generateDocsForProject(projectPath: string): string {
   
     let documentation = '';
   
-    const sourceFiles = project.getSourceFiles();
+    const sourceFiles = project.getSourceFiles().filter((sourceFile) => {
+      return !sourceFile.getFilePath().includes('node_modules');
+    });
   
     sourceFiles.forEach((sourceFile) => {
       documentation += `# Source File: ${sourceFile.getBaseName()}\n\n`;
@@ -114,6 +116,7 @@ export function generateDocsForProject(projectPath: string): string {
   
     return documentation;
   }
+  
 
 
 export function generateDocs(sourceFile: SourceFile): string {
