@@ -1,5 +1,5 @@
 import { Project, SourceFile, Node, ParameterDeclaration, MethodDeclaration, ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, EnumDeclaration, TypeAliasDeclaration, VariableDeclaration, SyntaxKind, PropertySignature } from "ts-morph";
-import path from 'path';
+import glob from 'glob';
 
 function generateFunctionDocs(functionDeclaration: FunctionDeclaration | MethodDeclaration): string {
     let docs = '';
@@ -98,27 +98,25 @@ function generateClassDocs(classDeclaration: ClassDeclaration): string {
     return docs;
 }
 
-export function generateDocsForProject(projectPath: string): string {
-    const project = new Project({
-      tsConfigFilePath: projectPath,
-    });
+export function generateDocsForProject(project: Project, excludePatterns: string[] = []): string {
+    let docs = '';
   
-    let documentation = '';
+    const combinedPattern = `**/*.{ts,tsx}`; 
+    const globOptions = {
+      cwd: project.getRootDirectories()[0].getPath(),
+      ignore: excludePatterns,
+      absolute: true
+    };
   
-    const sourceFiles = project.getSourceFiles().filter((sourceFile) => {
-      // Exclude source files within node_modules
-      const filePath = sourceFile.getFilePath();
-      const relativePath = path.relative(projectPath, filePath);
-      return !relativePath.startsWith('node_modules');
-    });
+    const filePaths = glob.sync(combinedPattern, globOptions);
   
-    sourceFiles.forEach((sourceFile) => {
-      documentation += `# Source File: ${sourceFile.getBaseName()}\n\n`;
-      documentation += generateDocs(sourceFile);
-      documentation += '\n---\n\n';
-    });
+    const sourceFiles = filePaths.map(filePath => project.getSourceFileOrThrow(filePath));
   
-    return documentation;
+    for (const sourceFile of sourceFiles) {
+      docs += generateDocs(sourceFile);
+    }
+  
+    return docs;
   }
   
 
