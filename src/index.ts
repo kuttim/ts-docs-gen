@@ -36,7 +36,7 @@ program
     }
 
     const project = new Project({
-      tsConfigFilePath: path.join(config.input, 'tsconfig.json'),
+      tsConfigFilePath: path.join(process.cwd(), 'tsconfig.json'),  
     });
 
     const documentation = generateDocsForProject(project, config.exclude);
