@@ -42,6 +42,7 @@ program
     const documentation = generateDocsForProject(project, config.exclude);
     
     fs.writeFileSync(path.join(config.output, 'documentation.md'), documentation);
+    console.info("Successfully wrote documentation to" + config.output, 'documentation.md');
   });
 
 program.parse(process.argv);

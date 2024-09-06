@@ -1,15 +1,29 @@
-import { Project, SourceFile, Node, ParameterDeclaration, MethodDeclaration, ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, EnumDeclaration, TypeAliasDeclaration, VariableDeclaration, SyntaxKind, PropertySignature } from "ts-morph";
-import glob from 'glob';
+import { Project, SourceFile, Node, ParameterDeclaration, MethodDeclaration, ClassDeclaration, FunctionDeclaration, InterfaceDeclaration, EnumDeclaration, TypeAliasDeclaration, VariableDeclaration, SyntaxKind, PropertySignature, Type } from "ts-morph";
+import { sync } from 'glob';
+import * as fs from 'fs';
+import * as path from 'path';
+
+function isTypeFromNodeModules(type: Type): boolean {
+    const symbol = type.getSymbol();
+    if (!symbol) return false;
+
+    const declarations = symbol.getDeclarations();
+    return declarations.some(declaration => declaration.getSourceFile().getFilePath().includes('node_modules'));
+}
+
+function cleanType(type: Type): string {
+    return isTypeFromNodeModules(type) ? 'External' : type.getText();
+}
 
 function generateFunctionDocs(functionDeclaration: FunctionDeclaration | MethodDeclaration): string {
     let docs = '';
 
     docs += `### Function: **${functionDeclaration.getName()}**\n\n`;
-    docs += `* **Return Type:** \`${functionDeclaration.getReturnType().getText()}\`\n`;
+    docs += `* **Return Type:** \`${cleanType(functionDeclaration.getReturnType())}\`\n`;
     docs += '* **Parameters:**\n';
 
     functionDeclaration.getParameters().forEach((parameter: ParameterDeclaration) => {
-        docs += `  * **${parameter.getName()}**: \`${parameter.getType().getText()}\`\n`;
+        docs += `  * **${parameter.getName()}**: \`${cleanType(parameter.getType())}\`\n`;
     });
 
     functionDeclaration.getJsDocs().forEach(jsDoc => {
@@ -31,7 +45,7 @@ function generateInterfaceDocs(interfaceDeclaration: InterfaceDeclaration): stri
     docs += 'Properties:\n';
     properties.forEach((property: PropertySignature) => {
         const propertyName = property.getName();
-        const propertyType = property.getType().getText();
+        const propertyType = cleanType(property.getType());
 
         docs += `\tName: ${propertyName}, Type: ${propertyType}\n`;
     });
@@ -62,7 +76,7 @@ function generateTypeAliasDocs(typeAliasDeclaration: TypeAliasDeclaration): stri
     let docs = '';
 
     const name = typeAliasDeclaration.getName();
-    const type = typeAliasDeclaration.getType().getText();
+    const type = cleanType(typeAliasDeclaration.getType());
 
     docs += `Type Alias Name: ${name}, Type: ${type}\n`;
 
@@ -73,13 +87,12 @@ function generateVariableDocs(variableDeclaration: VariableDeclaration): string 
     let docs = '';
 
     const name = variableDeclaration.getName();
-    const type = variableDeclaration.getType().getText();
+    const type = cleanType(variableDeclaration.getType());
 
     docs += `* **Variable Name:** \`${name}\`, **Type:** \`${type}\`\n`;
 
     return docs;
 }
-
 
 function generateClassDocs(classDeclaration: ClassDeclaration): string {
     let docs = '';
@@ -100,26 +113,33 @@ function generateClassDocs(classDeclaration: ClassDeclaration): string {
 
 export function generateDocsForProject(project: Project, excludePatterns: string[] = []): string {
     let docs = '';
-  
-    const combinedPattern = `**/*.{ts,tsx}`; 
+
+    const combinedPattern = `**/*.{ts,tsx}`;
+
+    const rootDirectory = process.cwd();
+
+    const tsConfigPath = path.join(rootDirectory, 'tsconfig.json');
+
+    if (!fs.existsSync(tsConfigPath)) {
+        throw new Error(`tsconfig.json not found at ${tsConfigPath}`);
+    }
+
     const globOptions = {
-      cwd: project.getRootDirectories()[0].getPath(),
-      ignore: excludePatterns,
+      cwd: rootDirectory, 
+      ignore: ['node_modules/**', ...excludePatterns],
       absolute: true
     };
-  
-    const filePaths = glob.sync(combinedPattern, globOptions);
-  
+
+    const filePaths = sync(combinedPattern, globOptions);
+
     const sourceFiles = filePaths.map(filePath => project.getSourceFileOrThrow(filePath));
-  
+
     for (const sourceFile of sourceFiles) {
       docs += generateDocs(sourceFile);
     }
-  
-    return docs;
-  }
-  
 
+    return docs;
+}
 
 export function generateDocs(sourceFile: SourceFile): string {
     let documentation = '# Documentation\n\n';
