@@ -27,8 +27,8 @@ jobs:
       run: npm test
     - name: Configure Git user 
       run: |
-       git config --global user.email "kuttim.mikk@gmail.com"
-       git config --global user.name "kuttim"
+        git config --global user.email "kuttim.mikk@gmail.com"
+        git config --global user.name "kuttim"
 
     - name: Bump version and push changes
       run: |
