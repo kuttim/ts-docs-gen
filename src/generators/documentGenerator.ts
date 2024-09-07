@@ -132,7 +132,8 @@ export function generateDocsForProject(project: Project, excludePatterns: string
 
     const filePaths = sync(combinedPattern, globOptions);
 
-    const sourceFiles = filePaths.map(filePath => project.getSourceFileOrThrow(filePath));
+    //const sourceFiles = filePaths.map(filePath => project.getSourceFileOrThrow(filePath));
+    const sourceFiles = project.getSourceFiles();
 
     for (const sourceFile of sourceFiles) {
       docs += generateDocs(sourceFile);
