@@ -26,17 +26,12 @@ jobs:
     - name: Run tests
       run: npm test
 
-    - name: Set up Git user for versioning
-      run: |
-        git config --global user.name "kuttim"
-        git config --global user.email "kuttim.mikk@gmail.com"
-
     - name: Bump version and push changes
       run: |
         npm version patch -m "Bump version to %s"
         git push origin master --tags
       env:
-        GIT_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
     - name: Publish to npm
       if: github.ref == 'refs/heads/master'
