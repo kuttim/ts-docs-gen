@@ -10,6 +10,7 @@
   "scripts": {
     "test": "jest",
     "start": "ts-node src/index.ts",
+    "prepublishOnly": "npm version patch -m \"Bump version to %s\"",
     "build": "tsc -p tsconfig.json"
   },
   "bin": {
