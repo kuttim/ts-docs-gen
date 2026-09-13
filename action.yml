@@ -1,0 +1,63 @@
+name: 'ts-docs-gen'
+description: 'Generate TypeScript API documentation with ts-docs-gen'
+author: 'Mikk Küttim'
+branding:
+  icon: 'book-open'
+  color: 'blue'
+
+inputs:
+  version:
+    description: 'Version of @kuttim/ts-docs-gen to install (npm dist-tag or version range)'
+    required: false
+    default: 'latest'
+  input:
+    description: 'Input directory containing TypeScript source files'
+    required: false
+    default: './src'
+  output:
+    description: 'Output directory for generated documentation'
+    required: false
+    default: './docs'
+  exclude:
+    description: 'Comma-separated glob pattern(s) to exclude from documentation'
+    required: false
+    default: ''
+  config:
+    description: 'Path to a ts-docs-gen.json config file'
+    required: false
+    default: ''
+  single-file:
+    description: 'Write a single documentation.md instead of one file per source file'
+    required: false
+    default: 'false'
+  include-non-exported:
+    description: 'Include declarations that are not exported'
+    required: false
+    default: 'false'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Install ts-docs-gen
+      shell: bash
+      run: npm install --no-save "@kuttim/ts-docs-gen@${{ inputs.version }}"
+
+    - name: Generate documentation
+      shell: bash
+      run: |
+        args=(--input "${{ inputs.input }}" --output "${{ inputs.output }}")
+
+        if [ -n "${{ inputs.exclude }}" ]; then
+          args+=(--exclude "${{ inputs.exclude }}")
+        fi
+        if [ -n "${{ inputs.config }}" ]; then
+          args+=(--config "${{ inputs.config }}")
+        fi
+        if [ "${{ inputs.single-file }}" = "true" ]; then
+          args+=(--single-file)
+        fi
+        if [ "${{ inputs.include-non-exported }}" = "true" ]; then
+          args+=(--include-non-exported)
+        fi
+
+        npx ts-docs-gen "${args[@]}"
